@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bandwithThrottle;
+namespace malkusch\bandwidthThrottle;
 
 /**
  * Token Bucket algorithm.
@@ -28,6 +28,11 @@ class TokenBucket
     private $microTimestamp;
     
     /**
+     * @var int precision scale for bc_* operations.
+     */
+    private $bcScale = 8;
+    
+    /**
      * One millisecond in microseconds.
      */
     const MILLISECOND = 1000;
@@ -53,7 +58,7 @@ class TokenBucket
     /**
      * Consumes tokens for the packet.
      * 
-     * Consumes tokens for the packet size. If there arn't sufficient tokens
+     * Consumes tokens for the packet size. If there aren't sufficient tokens
      * the method sleeps untils there are enough tokens.
      * 
      * @param int $tokens The token count.
@@ -62,7 +67,7 @@ class TokenBucket
     public function consume($tokens)
     {
         if ($tokens > $this->capacity) {
-            throw new LengthException("Packet size is larger than capacity.");
+            throw new \LengthException("Packet size is larger than capacity.");
         
         }
         
@@ -82,11 +87,15 @@ class TokenBucket
      * 
      * @param int $tokens The amount of tokens.
      */
-    private function setTokens($tokens)
+    public function setTokens($tokens)
     {
         $duration = $tokens * $this->microRate / self::SECOND;
-        $error = (microtime(true) - $this->microTimestamp) * self::SECOND % $this->microRate / self::SECOND;
-        $this->microTimestamp = microtime(true) - $duration - $error;
+        $time = microtime(true);
+        
+        // $error = ($time - $this->microTimestamp) * self::SECOND % $this->microRate / self::SECOND;
+        $error = 0;
+        
+        $this->microTimestamp = $time - $duration - $error;
     }
     
     /**
@@ -96,7 +105,8 @@ class TokenBucket
      */
     public function getTokens()
     {
-        $tokens = (int) ((microtime(true) - $this->microTimestamp) * self::SECOND / $this->microRate);
+        $diff = bcsub(microtime(true), $this->microTimestamp, $this->bcScale);
+        $tokens = (int) ($diff * self::SECOND / $this->microRate);
         return min($this->capacity, $tokens);
     }
     

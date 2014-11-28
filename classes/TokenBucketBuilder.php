@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bandwithThrottle;
+namespace malkusch\bandwidthThrottle;
 
 /**
  * Token Bucket builder.
