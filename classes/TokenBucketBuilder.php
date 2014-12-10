@@ -24,7 +24,7 @@ class TokenBucketBuilder
     
     /**
      * Set the rate in bytes per second.
-     * 
+     *
      * @param int $bytes Bytes per second rate.
      */
     public function setRateInBytesPerSecond($bytes)
@@ -34,7 +34,7 @@ class TokenBucketBuilder
     
     /**
      * Set the rate in kilobytes per second.
-     * 
+     *
      * @param int $kbytes Kilobytes per second rate.
      */
     public function setRateInKilobytesPerSecond($kbytes)
@@ -44,7 +44,7 @@ class TokenBucketBuilder
     
     /**
      * Sets the capacity in bytes.
-     * 
+     *
      * @param int $bytes The capacity in bytes.
      */
     public function setCapacityInBytes($bytes)
@@ -54,7 +54,7 @@ class TokenBucketBuilder
     
     /**
      * Sets the capacity in kilobytes.
-     * 
+     *
      * @param int $kbytes The capacity in kilobytes.
      */
     public function setCapacityInKBytes($kbytes)
@@ -64,7 +64,7 @@ class TokenBucketBuilder
     
     /**
      * Sets the capacity in megabytes.
-     * 
+     *
      * @param int $mbytes The capacity in megabytes.
      */
     public function setCapacityInMBytes($mbytes)
@@ -74,7 +74,7 @@ class TokenBucketBuilder
     
     /**
      * Builds the Token Bucket.
-     * 
+     *
      * @return TokenBucket The Token Bucket
      */
     public function build()

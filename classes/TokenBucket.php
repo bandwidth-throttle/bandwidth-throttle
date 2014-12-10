@@ -44,7 +44,7 @@ class TokenBucket
     
     /**
      * Initializes the Token bucket.
-     * 
+     *
      * @param int $capacity  Capacity of the bucket.
      * @param int $microRate Microseconds for adding one token.
      */
@@ -57,10 +57,10 @@ class TokenBucket
     
     /**
      * Consumes tokens for the packet.
-     * 
+     *
      * Consumes tokens for the packet size. If there aren't sufficient tokens
      * the method sleeps untils there are enough tokens.
-     * 
+     *
      * @param int $tokens The token count.
      * @throws LengthException if packet size is larged than token capacity.
      */
@@ -84,7 +84,7 @@ class TokenBucket
     
     /**
      * Sets the amount of tokens.
-     * 
+     *
      * @param int $tokens The amount of tokens.
      */
     public function setTokens($tokens)
@@ -100,7 +100,7 @@ class TokenBucket
     
     /**
      * Returns the tokens.
-     * 
+     *
      * @return int The tokens.
      */
     public function getTokens()

@@ -37,7 +37,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests the intial token amount
-     * 
+     *
      * @Test
      */
     public function testInitialTokens()
@@ -48,7 +48,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests adding tokens.
-     * 
+     *
      * @Test
      */
     public function testTokenAddRate()
@@ -72,7 +72,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests consuming more than the capacity.
-     * 
+     *
      * @test
      * @expectedException \LengthException
      */
@@ -84,10 +84,10 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests consuming decreases token amount.
-     * 
+     *
      * @param int $amount Consumed amount.
      * @param int $capacity Bucket capacity.
-     * 
+     *
      * @dataProvider provideTestConsumeDecreasesTokens
      * @test
      */
@@ -101,7 +101,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Provides test cases for testConsumeDecreasesTokens().
-     * 
+     *
      * @return int[][] Test cases.
      */
     public function provideTestConsumeDecreasesTokens()
@@ -116,10 +116,10 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests consuming several times.
-     * 
+     *
      * @param int[] $amounts Consumed amounts.
      * @param int $capacity Bucket capacity.
-     * 
+     *
      * @test
      * @dataProvider provideTestConsumeSubsequently
      */
@@ -134,7 +134,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Returns test cases for testConsumeSubsequently().
-     * 
+     *
      * @return array Test cases.
      */
     public function provideTestConsumeSubsequently()
@@ -153,10 +153,10 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests consuming which would block.
-     * 
+     *
      * @param int $unblockedConsume Amount of unblocked consume.
      * @param int $blockedConsume Amount of blocked consume.
-     * 
+     *
      * @test
      * @dataProvider provideTestConsumeBlocking
      */
@@ -172,7 +172,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Returns test cases for testConsumeBlocking().
-     * 
+     *
      * @return int[][] Test cases.
      */
     public function provideTestConsumeBlocking()
@@ -187,7 +187,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests the Download rate.
-     * 
+     *
      * @test
      * @dataProvider provideTestRate
     public function testRate(
@@ -198,18 +198,18 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     ) {
         // clear the full bucket.
         $bucket->consume($bucket->getCapacity());
-        
+
         $time = microtime(true);
         do {
             $chunkTokens = min($tokens, $buffer);
             $tokens -= $chunkTokens;
             $bucket->consume($chunkTokens);
-            
+
         } while($tokens > 0);
-        
+
         $this->assertEquals($expectedTime, microtime(true) - $time);
     }
-    
+
     public function provideTestRate()
     {
         return array(
@@ -225,7 +225,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests consuming tokens without blocking.
-     * 
+     *
      * @dataProvider provideTestConsumeUnblocked
      * @test
      */
@@ -239,7 +239,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Provides test cases for testConsumeUnblocked().
-     * 
+     *
      * @return int[][] Test cases.
      */
     public function provideTestConsumeUnblocked()
@@ -254,7 +254,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Test the capacity limit of the bucket
-     * 
+     *
      * @Test
      */
     public function testCapacity()
@@ -267,7 +267,7 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests setToken() and getToken()
-     * 
+     *
      * @Test
      * @param int $tokens Tokens
      * @dataProvider provideTestSetTokens
@@ -282,8 +282,8 @@ class TokenBucketTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Test cases for testSetTokens()
-     * 
-     * 
+     *
+     *
      * @return int[][] tokens
      */
     public function provideTestSetTokens()
