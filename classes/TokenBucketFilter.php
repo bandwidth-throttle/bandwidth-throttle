@@ -64,6 +64,9 @@ class TokenBucketFilter extends \php_user_filter
      * @param bool     $closing  If the stream is closing.
      *
      * @return int The processing state.
+     *
+     * @SuppressWarnings("unused")
+     * @SuppressWarnings("short")
      */
     public function filter($in, $out, &$consumed, $closing)
     {
