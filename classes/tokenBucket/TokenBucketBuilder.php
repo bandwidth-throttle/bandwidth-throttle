@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bandwidthThrottle;
+namespace malkusch\bandwidthThrottle\tokenBucket;
 
 /**
  * Token Bucket builder.
@@ -33,13 +33,23 @@ class TokenBucketBuilder
     }
     
     /**
-     * Set the rate in kilobytes per second.
+     * Set the rate in kibibytes per second.
      *
-     * @param int $kbytes Kilobytes per second rate.
+     * @param int $kibibytes Kibibytes per second rate.
      */
-    public function setRateInKilobytesPerSecond($kbytes)
+    public function setRateInKiBperSecond($kibibytes)
     {
-        $this->setRateInBytesPerSecond($kbytes * 1024);
+        $this->setRateInBytesPerSecond($kibibytes * 1024);
+    }
+    
+    /**
+     * Set the rate in mebibytes per second.
+     *
+     * @param int $mebibytes mebibytes per second rate.
+     */
+    public function setRateInMiBPerSecond($mebibytes)
+    {
+        $this->setRateInKiBperSecond($mebibytes * 1024);
     }
     
     /**
@@ -53,23 +63,23 @@ class TokenBucketBuilder
     }
     
     /**
-     * Sets the capacity in kilobytes.
+     * Sets the capacity in kibibytes.
      *
-     * @param int $kbytes The capacity in kilobytes.
+     * @param int $kibibytes The capacity in kibibytes.
      */
-    public function setCapacityInKBytes($kbytes)
+    public function setCapacityInKiB($kibibytes)
     {
-        $this->setCapacityInBytes($kbytes * 1024);
+        $this->setCapacityInBytes($kibibytes * 1024);
     }
     
     /**
-     * Sets the capacity in megabytes.
+     * Sets the capacity in mebibytes.
      *
-     * @param int $mbytes The capacity in megabytes.
+     * @param int $mebibytes The capacity in mebibytes.
      */
-    public function setCapacityInMBytes($mbytes)
+    public function setCapacityInMiB($mebibytes)
     {
-        $this->setCapacityInKBytes($mbytes * 1024);
+        $this->setCapacityInKiB($mebibytes * 1024);
     }
     
     /**
