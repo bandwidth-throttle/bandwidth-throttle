@@ -109,7 +109,7 @@ class BandwidthThrottle
 
     /**
      * Sets the burst capacity.
-     * 
+     *
      * Setting the burst capacity is optional. If no capacity was set, the
      * capacity is set to the rate.
      *
@@ -128,7 +128,7 @@ class BandwidthThrottle
      *
      * This size determines how many bytes can be send instantly after the
      * throttle was activated without limiting the rate.
-     * 
+     *
      * Setting this size is optional. Default is 0.
      *
      * @param int    $initialBurst The initial burst size.
