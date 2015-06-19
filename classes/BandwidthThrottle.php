@@ -102,7 +102,7 @@ class BandwidthThrottle
      *
      * @throws \InvalidArgumentException The unit was invalid.
      */
-    public function setRate($rate, $unit = self::BYTE)
+    public function setRate($rate, $unit = self::BYTES)
     {
         $this->tokenBucketBuilder->setRate($rate, $unit);
     }
@@ -118,7 +118,7 @@ class BandwidthThrottle
      *
      * @throws \InvalidArgumentException The unit was invalid.
      */
-    public function setBurstCapacity($capacity, $unit = self::BYTE)
+    public function setBurstCapacity($capacity, $unit = self::BYTES)
     {
         $this->tokenBucketBuilder->setCapacity($capacity, $unit);
     }
