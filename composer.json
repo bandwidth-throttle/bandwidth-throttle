@@ -18,7 +18,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "bandwidth-throttle/token-bucket": "dev-master"
+        "bandwidth-throttle/token-bucket": "^0.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",
