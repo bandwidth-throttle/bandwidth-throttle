@@ -48,7 +48,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests creating filter fails if no TokenBucket was passed.
-     * 
+     *
      * @test
      * @expectedException \InvalidArgumentException
      */
@@ -60,9 +60,9 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Traffic shaping doesn't alter the content.
-     * 
+     *
      * @param string[] $writes The writes to the stream.
-     * 
+     *
      * @test
      * @dataProvider provideTestFilterConservesContent
      */
@@ -89,7 +89,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Returns test cases for testFilterConservesContent().
-     * 
+     *
      * @return array Test cases.
      */
     public function provideTestFilterConservesContent()
@@ -109,10 +109,10 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Tests traffic shapping filtering.
-     * 
+     *
      * @param float  $expectedDuration The expected duration in seconds.
      * @param int[]  $bytes            The amount of bytes to write.
-     * 
+     *
      * @test
      * @dataProvider provideTestFilterShapesTraffic
      */
@@ -136,7 +136,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     
     /**
      * Returns test cases for testFilterShapesTraffic().
-     * 
+     *
      * @return array The test cases.
      */
     public function provideTestFilterShapesTraffic()

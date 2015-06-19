@@ -10,7 +10,24 @@ use bandwidthThrottle\tokenBucket\TokenBucket;
  * When the filter is created with stream_filter_append() or
  * stream_filter_prepend(), the $param parameter is expected to be an
  * instance of TokenBucket.
- * 
+ *
+ * <code>
+ * use bandwidthThrottle\TokenBucketFilter;
+ * use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+ *
+ * $in  = fopen(__DIR__ . "/resources/video.mpg", "r");
+ * $out = fopen("php://output", "w");
+ *
+ * $tokenBucketBuilder = new TokenBucketBuilder();
+ * $tokenBucketBuilder->setCapacityInMiB(1);        // Burst capacity of 1MiB
+ * $tokenBucketBuilder->setRateInKiBPerSecond(100); // Rate of 100KiB/s
+ *
+ * stream_filter_register("throttle", TokenBucketFilter::class);
+ * stream_filter_append($out, "throttle", STREAM_FILTER_WRITE, $tokenBucketBuilder->build());
+ *
+ * stream_copy_to_stream($in, $out);
+ * </code>
+ *
  * @author Markus Malkusch <markus@malkusch.de>
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
  * @license WTFPL
@@ -25,7 +42,7 @@ class TokenBucketFilter extends \php_user_filter
     
     /**
      * Build the token bucket.
-     * 
+     *
      * @throws \InvalidArgumentException The token bucket was not passed in the $params parameter.
      */
     public function onCreate()
