@@ -11,6 +11,10 @@ use bandwidthThrottle\tokenBucket\TokenBucket;
  * stream_filter_prepend(), the $param parameter is expected to be an
  * instance of TokenBucket.
  *
+ * This filter can shape traffic in both directions. I.e. you can append it
+ * to an output stream as well to an input stream.
+ *
+ * Example:
  * <code>
  * use bandwidthThrottle\TokenBucketFilter;
  * use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
