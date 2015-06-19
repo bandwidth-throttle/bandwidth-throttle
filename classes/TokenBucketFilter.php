@@ -23,8 +23,7 @@ use bandwidthThrottle\tokenBucket\TokenBucket;
  * $out = fopen("php://output", "w");
  *
  * $tokenBucketBuilder = new TokenBucketBuilder();
- * $tokenBucketBuilder->setCapacityInMiB(1);        // Burst capacity of 1MiB
- * $tokenBucketBuilder->setRateInKiBPerSecond(100); // Rate of 100KiB/s
+ * $tokenBucketBuilder->setRate(100, TokenBucketBuilder::KIBIBYTES); // Rate of 100KiB/s
  *
  * stream_filter_register("throttle", TokenBucketFilter::class);
  * stream_filter_append($out, "throttle", STREAM_FILTER_WRITE, $tokenBucketBuilder->build());
