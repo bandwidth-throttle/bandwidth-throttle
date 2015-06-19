@@ -54,8 +54,8 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnCreatesFails()
     {
-        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
-        $this->filter = stream_filter_append(fopen("php://memory", "w"), "test");
+        stream_filter_register("testOnCreatesFails", "bandwidthThrottle\\TokenBucketFilter");
+        $this->filter = stream_filter_append(fopen("php://memory", "w"), "testOnCreatesFails");
     }
     
     /**
