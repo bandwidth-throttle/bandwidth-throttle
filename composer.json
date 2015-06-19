@@ -1,0 +1,8 @@
+{
+    "name": "bandwidth-throttle/bandwidth-throttle-doc",
+    "require": {
+        "php": ">=5",
+	"bandwidth-throttle/bandwidth-throttle": "dev-master",
+	"apigen/apigen": "^4"
+    }
+}
