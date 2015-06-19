@@ -1,15 +1,15 @@
 <?php
 
-namespace malkusch\bandwidthThrottle\filter;
+namespace bandwidthThrottle;
 
-use malkusch\bandwidthThrottle\tokenBucket\TokenBucket;
+use bandwidthThrottle\tokenBucket\TokenBucket;
 
 /**
  * Stream filter which uses a token bucket for traffic shaping.
  *
  * When the filter is created with stream_filter_append() or
  * stream_filter_prepend(), the $param parameter is expected to be an
- * instance of {@link TokenBucket}.
+ * instance of TokenBucket.
  * 
  * @author Markus Malkusch <markus@malkusch.de>
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations

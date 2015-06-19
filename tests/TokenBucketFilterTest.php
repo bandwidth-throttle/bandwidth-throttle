@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bandwidthThrottle\filter;
+namespace bandwidthThrottle;
 
-use malkusch\bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
 use phpmock\environment\SleepEnvironmentBuilder;
 use phpmock\environment\MockEnvironment;
 
@@ -31,7 +31,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new SleepEnvironmentBuilder();
         $builder->addNamespace(__NAMESPACE__)
-                ->addNamespace("malkusch\\bandwidthThrottle\\tokenBucket")
+                ->addNamespace("bandwidthThrottle\\tokenBucket")
                 ->setTimestamp(1417011228);
 
         $this->sleepEnvironent = $builder->build();
@@ -54,7 +54,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnCreatesFails()
     {
-        stream_filter_register("test", "malkusch\\bandwidthThrottle\\filter\\TokenBucketFilter");
+        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
         $this->filter = stream_filter_append(fopen("php://memory", "w"), "test");
     }
     
@@ -74,7 +74,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
         $builder->setCapacityInBytes(10);
         $builder->setRateInBytesPerSecond(1);
         
-        stream_filter_register("test", "malkusch\\bandwidthThrottle\\filter\\TokenBucketFilter");
+        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
         $this->filter = stream_filter_append($stream, "test", STREAM_FILTER_WRITE, $builder->build());
         
         foreach ($writes as $write) {
@@ -124,7 +124,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
         $builder->setCapacityInBytes(10);
         $builder->setRateInBytesPerSecond(1);
         
-        stream_filter_register("test", "malkusch\\bandwidthThrottle\\filter\\TokenBucketFilter");
+        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
         $this->filter = stream_filter_append($stream, "test", null, $builder->build());
         
         $time = microtime(true);
