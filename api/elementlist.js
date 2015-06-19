@@ -1,3 +1,3 @@
 
 var ApiGen = ApiGen || {};
-ApiGen.elements = [["c","bandwidthThrottle\\TokenBucketFilter"]];
+ApiGen.elements = [["c","bandwidthThrottle\\BandwidthThrottle"],["c","bandwidthThrottle\\BandwidthThrottleException"],["c","bandwidthThrottle\\TokenBucketFilter"]];

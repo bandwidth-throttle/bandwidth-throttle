@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class bandwidthThrottle\BandwidthThrottle</title>
+
+	<link rel="stylesheet" href="resources/style.css?95ada9fb523b6ab4fd1c47bb375f713f2cc65542">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="active">
+					<a href="namespace-bandwidthThrottle.html">
+						bandwidthThrottle					</a>
+
+						</li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-bandwidthThrottle.BandwidthThrottle.html">BandwidthThrottle</a></li>
+				<li><a href="class-bandwidthThrottle.TokenBucketFilter.html">TokenBucketFilter</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-bandwidthThrottle.BandwidthThrottleException.html">BandwidthThrottleException</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-bandwidthThrottle.html" title="Summary of bandwidthThrottle"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class BandwidthThrottle</h1>
+
+
+	<div class="description">
+	<p>Stream based bandwidth throtteling.</p>
+
+<p>This class is a facade for the throtteling stream filter
+<code><a href="class-bandwidthThrottle.TokenBucketFilter.html">bandwidthThrottle\TokenBucketFilter</a></code> and PHP's stream_filter_* functions.</p>
+
+<p>You have to set a rate with <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#_setRate">bandwidthThrottle\BandwidthThrottle::setRate()</a></code>. Then you can
+throttle a stream by calling the <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#_throttle">bandwidthThrottle\BandwidthThrottle::throttle()</a></code> method.
+After that all operations on that stream are throttled.</p>
+
+<p>Per default the throttle applies for both, input and output streams.</p>
+
+<p>The following example will stream a video with a rate of 100KiB/s to the
+client:</p>
+
+<pre><span class="php-keyword1">use</span> bandwidthThrottle\BandwidthThrottle;
+
+<span class="php-var">$in</span>  = <span class="php-keyword2">fopen</span>(__DIR__ . <span class="php-quote">&quot;/resources/video.mpg&quot;</span>, <span class="php-quote">&quot;r&quot;</span>);
+<span class="php-var">$out</span> = <span class="php-keyword2">fopen</span>(<span class="php-quote">&quot;php://output&quot;</span>, <span class="php-quote">&quot;w&quot;</span>);
+
+<span class="php-var">$throttle</span> = <span class="php-keyword1">new</span> BandwidthThrottle();
+<span class="php-var">$throttle</span>-&gt;setRate(<span class="php-num">100</span>, BandwidthThrottle::KIBIBYTES); <span class="php-comment">// Set limit to 100KiB/s</span>
+<span class="php-var">$throttle</span>-&gt;throttle(<span class="php-var">$out</span>);
+
+<span class="php-keyword2">stream_copy_to_stream</span>(<span class="php-var">$in</span>, <span class="php-var">$out</span>);</pre>
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> <a href="namespace-bandwidthThrottle.html">bandwidthThrottle</a><br>
+		
+
+				<b>License:</b>
+				<a href="WTFPL">WTFPL</a><br>
+				<b>Author:</b>
+				Markus Malkusch <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;">&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;</a><br>
+				<b>Link:</b>
+				<a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a><br>
+			<b>Located at</b> <a href="source-class-bandwidthThrottle.BandwidthThrottle.html#7-248" title="Go to source code">BandwidthThrottle.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#92-95" title="Go to source code">__construct</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setRate" id="_setRate">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setRate">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#97-108" title="Go to source code">setRate</a>( <span>integer <var>$rate</var></span>, <span>string <var>$unit</var> = self::BYTE</span> )</code>
+
+		<div class="description short">
+			<p>Sets the rate per second.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Sets the rate per second.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rate</var></dt>
+					<dd>The rate per second.</dd>
+					<dt><var>$unit</var></dt>
+					<dd>The unit for the rate, default is bytes.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					InvalidArgumentException<br>The unit was invalid.
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setBurstCapacity" id="_setBurstCapacity">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setBurstCapacity">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#110-124" title="Go to source code">setBurstCapacity</a>( <span>integer <var>$capacity</var></span>, <span>string <var>$unit</var> = self::BYTE</span> )</code>
+
+		<div class="description short">
+			<p>Sets the burst capacity.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Sets the burst capacity.</p>
+
+<p>Setting the burst capacity is optional. If no capacity was set, the
+capacity is set to the rate.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$capacity</var></dt>
+					<dd>The burst capacity.</dd>
+					<dt><var>$unit</var></dt>
+					<dd>The unit for the capacity, default is bytes.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					InvalidArgumentException<br>The unit was invalid.
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setInitialBurst" id="_setInitialBurst">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setInitialBurst">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#126-142" title="Go to source code">setInitialBurst</a>( <span>integer <var>$initialBurst</var></span>, <span>string <var>$unit</var> = <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#BYTES">bandwidthThrottle\BandwidthThrottle::<b>BYTES</b></a></code></span> )</code>
+
+		<div class="description short">
+			<p>Sets the initial burst size.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Sets the initial burst size.</p>
+
+<p>This size determines how many bytes can be send instantly after the
+throttle was activated without limiting the rate.</p>
+
+<p>Setting this size is optional. Default is 0.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$initialBurst</var></dt>
+					<dd>The initial burst size.</dd>
+					<dt><var>$unit</var></dt>
+					<dd>The unit for the burst size, default is bytes.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					InvalidArgumentException<br>The unit was invalid.
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setThrottleInputStream" id="_setThrottleInputStream">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setThrottleInputStream">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#144-152" title="Go to source code">setThrottleInputStream</a>( )</code>
+
+		<div class="description short">
+			<p>Throttles only the input stream.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Throttles only the input stream.</p>
+
+<p>Default is throtteling both streams.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setThrottleOutputStream" id="_setThrottleOutputStream">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setThrottleOutputStream">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#154-162" title="Go to source code">setThrottleOutputStream</a>( )</code>
+
+		<div class="description short">
+			<p>Throttles only the output stream.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Throttles only the output stream.</p>
+
+<p>Default is throtteling both streams.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setThrottleBothStreams" id="_setThrottleBothStreams">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setThrottleBothStreams">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#164-172" title="Go to source code">setThrottleBothStreams</a>( )</code>
+
+		<div class="description short">
+			<p>Throttles the output and input stream.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Throttles the output and input stream.</p>
+
+<p>This is the default mode.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="throttle" id="_throttle">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_throttle">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#174-207" title="Go to source code">throttle</a>( <span>resource <var>$stream</var></span> )</code>
+
+		<div class="description short">
+			<p>Throttles a stream to the given rate.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Throttles a stream to the given rate.</p>
+
+<p>This registers a filter to the given stream which does the traffic
+shaping. After that any stream operation is throttled.</p>
+
+<p>The stream can be an input or an output stream.</p>
+
+<p>This object can throttle only one stream at a time. If you want to
+call throttle() again, make either sure you called <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#_unthrottle">bandwidthThrottle\BandwidthThrottle::unthrottle()</a></code>
+before or use a new instance.</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$stream</var></dt>
+					<dd>The stream.</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-bandwidthThrottle.BandwidthThrottleException.html">bandwidthThrottle\BandwidthThrottleException</a></code><br>Error during throtteling the stream.
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="unthrottle" id="_unthrottle">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_unthrottle">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#229-247" title="Go to source code">unthrottle</a>( )</code>
+
+		<div class="description short">
+			<p>Unthrottles a previously throttled stream.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Unthrottles a previously throttled stream.</p>
+
+<p>If the throttle was not applied to a stream, this method returns silenty.</p>
+
+
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><a href="class-bandwidthThrottle.BandwidthThrottleException.html">bandwidthThrottle\BandwidthThrottleException</a></code><br>The throttle could not be removed.
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="BYTES" id="BYTES">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#41-44" title="Go to source code"><b>BYTES</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Unit for bytes.</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Unit for bytes.</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#BYTES" class="anchor">#</a>
+				<code>bandwidthThrottle\TokenBucketBuilder::BYTES</code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KILOBYTES" id="KILOBYTES">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#46-49" title="Go to source code"><b>KILOBYTES</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Unit for kilobytes (1000 bytes).</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Unit for kilobytes (1000 bytes).</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KILOBYTES" class="anchor">#</a>
+				<code>bandwidthThrottle\TokenBucketBuilder::KILOBYTES</code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="KIBIBYTES" id="KIBIBYTES">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#51-54" title="Go to source code"><b>KIBIBYTES</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Unit for kibibytes (1024 bytes).</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Unit for kibibytes (1024 bytes).</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#KIBIBYTES" class="anchor">#</a>
+				<code>bandwidthThrottle\TokenBucketBuilder::KIBIBYTES</code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="MEGABYTES" id="MEGABYTES">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#56-59" title="Go to source code"><b>MEGABYTES</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Unit for megabytes (1000 kilobytes).</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Unit for megabytes (1000 kilobytes).</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#MEGABYTES" class="anchor">#</a>
+				<code>bandwidthThrottle\TokenBucketBuilder::MEGABYTES</code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="MEBIBYTES" id="MEBIBYTES">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#61-64" title="Go to source code"><b>MEBIBYTES</b></a>
+			</code>
+
+			<div class="description short">
+				<p>Unit for mebibytes (1024 kibibytes).</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Unit for mebibytes (1024 kibibytes).</p>
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#MEBIBYTES" class="anchor">#</a>
+				<code>bandwidthThrottle\TokenBucketBuilder::MEBIBYTES</code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
