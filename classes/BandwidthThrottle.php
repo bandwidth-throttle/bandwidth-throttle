@@ -10,14 +10,14 @@ use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
  * This class is a facade for the throtteling stream filter
  * {@link TokenBucketFilter} and PHP's stream_filter_* functions.
  *
- * You have to set a rate with any of the setRate* methods. Then you can
+ * You have to set a rate with {@link setRate()}. Then you can
  * throttle a stream by calling the {@link throttle()} method.
  * After that all operations on that stream are throttled.
  *
  * Per default the throttle applies for both, input and output streams.
  *
  * The following example will stream a video with a rate of 100KiB/s to the
- * browser:
+ * client:
  * <code>
  * use bandwidthThrottle\BandwidthThrottle;
  *
@@ -25,7 +25,7 @@ use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
  * $out = fopen("php://output", "w");
  *
  * $throttle = new BandwidthThrottle();
- * $throttle->setRateInKiBperSecond(100); // Set limit to 100KiB/s
+ * $throttle->setRate(100, BandwidthThrottle::KIBIBYTES); // Set limit to 100KiB/s
  * $throttle->throttle($out);
  *
  * stream_copy_to_stream($in, $out);
@@ -37,6 +37,31 @@ use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
  */
 class BandwidthThrottle
 {
+
+    /**
+     * Unit for bytes.
+     */
+    const BYTES = TokenBucketBuilder::BYTES;
+
+    /**
+     * Unit for kilobytes (1000 bytes).
+     */
+    const KILOBYTES = TokenBucketBuilder::KILOBYTES;
+
+    /**
+     * Unit for kibibytes (1024 bytes).
+     */
+    const KIBIBYTES = TokenBucketBuilder::KIBIBYTES;
+
+    /**
+     * Unit for megabytes (1000 kilobytes).
+     */
+    const MEGABYTES = TokenBucketBuilder::MEGABYTES;
+
+    /**
+     * Unit for mebibytes (1024 kibibytes).
+     */
+    const MEBIBYTES = TokenBucketBuilder::MEBIBYTES;
 
     /**
      * @var TokenBucketBuilder The token bucket builder.
@@ -70,33 +95,50 @@ class BandwidthThrottle
     }
 
     /**
-     * Set the rate in bytes per second.
+     * Sets the rate per second.
      *
-     * @param int $bytes Bytes per second rate.
+     * @param int    $rate The rate per second.
+     * @param string $unit The unit for the rate, default is bytes.
+     *
+     * @throws \InvalidArgumentException The unit was invalid.
      */
-    public function setRateInBytesPerSecond($bytes)
+    public function setRate($rate, $unit = self::BYTE)
     {
-        $this->tokenBucketBuilder->setRateInBytesPerSecond($bytes);
+        $this->tokenBucketBuilder->setRate($rate, $unit);
+    }
+
+    /**
+     * Sets the burst capacity.
+     * 
+     * Setting the burst capacity is optional. If no capacity was set, the
+     * capacity is set to the rate.
+     *
+     * @param int    $capacity The burst capacity.
+     * @param string $unit     The unit for the capacity, default is bytes.
+     *
+     * @throws \InvalidArgumentException The unit was invalid.
+     */
+    public function setBurstCapacity($capacity, $unit = self::BYTE)
+    {
+        $this->tokenBucketBuilder->setCapacity($capacity, $unit);
     }
     
     /**
-     * Set the rate in kibibytes per second.
+     * Sets the initial burst size.
      *
-     * @param int $kibibytes Kibibytes per second rate.
-     */
-    public function setRateInKiBperSecond($kibibytes)
-    {
-        $this->tokenBucketBuilder->setRateInKiBperSecond($kibibytes);
-    }
-    
-    /**
-     * Set the rate in mebibytes per second.
+     * This size determines how many bytes can be send instantly after the
+     * throttle was activated without limiting the rate.
+     * 
+     * Setting this size is optional. Default is 0.
      *
-     * @param int $mebibytes mebibytes per second rate.
+     * @param int    $initialBurst The initial burst size.
+     * @param string $unit         The unit for the burst size, default is bytes.
+     *
+     * @throws \InvalidArgumentException The unit was invalid.
      */
-    public function setRateInMiBPerSecond($mebibytes)
+    public function setInitialBurst($initialBurst, $unit = self::BYTES)
     {
-        $this->tokenBucketBuilder->setRateInMiBPerSecond($mebibytes);
+        $this->tokenBucketBuilder->setInitialTokens($initialBurst, $unit);
     }
     
     /**

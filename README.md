@@ -26,7 +26,7 @@ $in  = fopen(__DIR__ . "/resources/video.mpg", "r");
 $out = fopen("php://output", "w");
 
 $throttle = new BandwidthThrottle();
-$throttle->setRateInKiBperSecond(100); // Set limit to 100KiB/s
+$throttle->setRate(100, BandwidthThrottle::KIBIBYTES); // Set limit to 100KiB/s
 $throttle->throttle($out);
 
 stream_copy_to_stream($in, $out);
