@@ -2,7 +2,10 @@
 
 namespace bandwidthThrottle;
 
-use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+use bandwidthThrottle\tokenBucket\TokenBucket;
+use bandwidthThrottle\tokenBucket\Rate;
+use bandwidthThrottle\tokenBucket\storage\Storage;
+use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
 
 /**
  * Stream based bandwidth throtteling.
@@ -41,32 +44,58 @@ class BandwidthThrottle
     /**
      * Unit for bytes.
      */
-    const BYTES = TokenBucketBuilder::BYTES;
+    const BYTES = "bytes";
 
     /**
      * Unit for kilobytes (1000 bytes).
      */
-    const KILOBYTES = TokenBucketBuilder::KILOBYTES;
+    const KILOBYTES = "kilobytes";
 
     /**
      * Unit for kibibytes (1024 bytes).
      */
-    const KIBIBYTES = TokenBucketBuilder::KIBIBYTES;
+    const KIBIBYTES = "kibibytes";
 
     /**
      * Unit for megabytes (1000 kilobytes).
      */
-    const MEGABYTES = TokenBucketBuilder::MEGABYTES;
+    const MEGABYTES = "megabytes";
 
     /**
      * Unit for mebibytes (1024 kibibytes).
      */
-    const MEBIBYTES = TokenBucketBuilder::MEBIBYTES;
+    const MEBIBYTES = "mebibytes";
+    
+    /**
+     * @var int[] The unit map.
+     */
+    private static $unitMap = [
+        self::BYTES     => 1,
+        self::KILOBYTES => 1000,
+        self::KIBIBYTES => 1024,
+        self::MEGABYTES => 1000000,
+        self::MEBIBYTES => 1048576,
+    ];
 
     /**
-     * @var TokenBucketBuilder The token bucket builder.
+     * @var Rate The rate.
      */
-    private $tokenBucketBuilder;
+    private $rate;
+    
+    /**
+     * @var int|null The capacity.
+     */
+    private $capacity;
+    
+    /**
+     * @var int The initial amount of tokens.
+     */
+    private $initialTokens = 0;
+    
+    /**
+     * @var Storage The token bucket storage.
+     */
+    private $storage;
     
     /**
      * @var int The read_write filter mode.
@@ -89,9 +118,12 @@ class BandwidthThrottle
      */
     const FILTER_NAME = "bandwidthThrottle";
 
+    /**
+     * Initialization.
+     */
     public function __construct()
     {
-        $this->tokenBucketBuilder = new TokenBucketBuilder();
+        $this->storage = new SingleProcessStorage();
     }
 
     /**
@@ -104,14 +136,32 @@ class BandwidthThrottle
      */
     public function setRate($rate, $unit = self::BYTES)
     {
-        $this->tokenBucketBuilder->setRate($rate, $unit);
+        $this->rate = new Rate($this->convertToBytes($rate, $unit), Rate::SECOND);
     }
 
+    /**
+     * Converts a amount of a unit into the amount of bytes.
+     *
+     * @param int    $amount The amount of the unit.
+     * @param string $unit   The unit.
+     *
+     * @return int The amount in bytes.
+     * @throws \InvalidArgumentException The unit was invalid.
+     */
+    private function convertToBytes($amount, $unit)
+    {
+        if (!isset(self::$unitMap[$unit])) {
+            throw new \InvalidArgumentException("The unit was invalid.");
+            
+        }
+        return $amount * self::$unitMap[$unit];
+    }
+    
     /**
      * Sets the burst capacity.
      *
      * Setting the burst capacity is optional. If no capacity was set, the
-     * capacity is set to the rate.
+     * capacity is set to the amount of bytes for one second.
      *
      * @param int    $capacity The burst capacity.
      * @param string $unit     The unit for the capacity, default is bytes.
@@ -120,9 +170,9 @@ class BandwidthThrottle
      */
     public function setBurstCapacity($capacity, $unit = self::BYTES)
     {
-        $this->tokenBucketBuilder->setCapacity($capacity, $unit);
+        $this->capacity = $this->convertToBytes($capacity, $unit);
     }
-    
+
     /**
      * Sets the initial burst size.
      *
@@ -138,7 +188,7 @@ class BandwidthThrottle
      */
     public function setInitialBurst($initialBurst, $unit = self::BYTES)
     {
-        $this->tokenBucketBuilder->setInitialTokens($initialBurst, $unit);
+        $this->initialTokens = $this->convertToBytes($initialBurst, $unit);
     }
     
     /**
@@ -194,12 +244,19 @@ class BandwidthThrottle
             );
         }
         $this->registerOnce();
-
+        
+        $capacity = empty($this->capacity)
+            ? $this->rate->getRate()
+            : $this->capacity;
+        
+        $bucket = new TokenBucket($capacity, $this->rate, $this->storage);
+        $bucket->bootstrap($this->initialTokens);
+        
         $this->filter = stream_filter_append(
             $stream,
             self::FILTER_NAME,
             $this->filterMode,
-            $this->tokenBucketBuilder->build()
+            $bucket
         );
         if (!is_resource($this->filter)) {
             throw new BandwidthThrottleException("Could not throttle the stream.");

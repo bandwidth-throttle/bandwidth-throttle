@@ -17,8 +17,8 @@
         "psr-4": {"bandwidthThrottle\\": "classes/"}
     },
     "require": {
-        "php": ">=5.4",
-        "bandwidth-throttle/token-bucket": "^0.2"
+        "php": ">=5.5",
+        "bandwidth-throttle/token-bucket": "^0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^4",

@@ -2,7 +2,9 @@
 
 namespace bandwidthThrottle;
 
-use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
+use bandwidthThrottle\tokenBucket\Rate;
+use bandwidthThrottle\tokenBucket\TokenBucket;
 use phpmock\environment\SleepEnvironmentBuilder;
 use phpmock\environment\MockEnvironment;
 
@@ -32,6 +34,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
         $builder = new SleepEnvironmentBuilder();
         $builder->addNamespace(__NAMESPACE__)
                 ->addNamespace("bandwidthThrottle\\tokenBucket")
+                ->addNamespace("bandwidthThrottle\\tokenBucket\\converter")
                 ->setTimestamp(1417011228);
 
         $this->sleepEnvironent = $builder->build();
@@ -69,13 +72,10 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     public function testFilterConservesContent(array $writes)
     {
         $stream = fopen("php://memory", "rw");
-        
-        $builder = new TokenBucketBuilder();
-        $builder->setCapacityInBytes(10);
-        $builder->setRateInBytesPerSecond(1);
+        $bucket = new TokenBucket(10, new Rate(1, Rate::SECOND), new SingleProcessStorage());
         
         stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
-        $this->filter = stream_filter_append($stream, "test", STREAM_FILTER_WRITE, $builder->build());
+        $this->filter = stream_filter_append($stream, "test", STREAM_FILTER_WRITE, $bucket);
         
         foreach ($writes as $write) {
             fwrite($stream, $write);
@@ -119,13 +119,10 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     public function testFilterShapesTraffic($expectedDuration, array $bytes)
     {
         $stream = fopen("php://memory", "w");
-        
-        $builder = new TokenBucketBuilder();
-        $builder->setCapacityInBytes(10);
-        $builder->setRateInBytesPerSecond(1);
+        $bucket = new TokenBucket(10, new Rate(1, Rate::SECOND), new SingleProcessStorage());
         
         stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
-        $this->filter = stream_filter_append($stream, "test", null, $builder->build());
+        $this->filter = stream_filter_append($stream, "test", null, $bucket);
         
         $time = microtime(true);
         foreach ($bytes as $byte) {

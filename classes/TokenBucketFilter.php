@@ -2,6 +2,7 @@
 
 namespace bandwidthThrottle;
 
+use bandwidthThrottle\tokenBucket\BlockingConsumer;
 use bandwidthThrottle\tokenBucket\TokenBucket;
 
 /**
@@ -39,12 +40,17 @@ class TokenBucketFilter extends \php_user_filter
 {
 
     /**
-     * @var TokenBucket The token bucket.
+     * @var BlockingConsumer The blocking token bucket consumer.
+     */
+    private $tokenConsumer;
+    
+    /**
+     * @var TokenBucket  The token bucket.
      */
     private $tokenBucket;
     
     /**
-     * Build the token bucket.
+     * Builds the token bucket consumer.
      *
      * @throws \InvalidArgumentException The token bucket was not passed in the $params parameter.
      */
@@ -55,7 +61,8 @@ class TokenBucketFilter extends \php_user_filter
                 "An instance of TokenBucket must be passed as \$params parameter."
             );
         }
-        $this->tokenBucket = $this->params;
+        $this->tokenBucket   = $this->params;
+        $this->tokenConsumer = new BlockingConsumer($this->tokenBucket);
     }
     
     /**
@@ -77,7 +84,7 @@ class TokenBucketFilter extends \php_user_filter
             $chunks = str_split($bucket->data, $this->tokenBucket->getCapacity());
             foreach ($chunks as $chunk) {
                 $tokens = strlen($chunk);
-                $this->tokenBucket->consume($tokens);
+                $this->tokenConsumer->consume($tokens);
                 $consumed += $tokens;
                 
             }
