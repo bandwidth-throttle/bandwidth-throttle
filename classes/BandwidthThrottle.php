@@ -20,6 +20,9 @@ use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
  *
  * Per default the throttle applies for both, input and output streams.
  *
+ * Please be aware of PHP's max_execution_time. You should adjust that
+ * time (with e.g. set_time_limit()) to the expected delay.
+ *
  * The following example will stream a video with a rate of 100KiB/s to the
  * client:
  * <code>
