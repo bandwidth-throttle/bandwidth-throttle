@@ -4,6 +4,7 @@ namespace bandwidthThrottle;
 
 use bandwidthThrottle\tokenBucket\BlockingConsumer;
 use bandwidthThrottle\tokenBucket\TokenBucket;
+use bandwidthThrottle\tokenBucket\storage\StorageException;
 
 /**
  * Stream filter which uses a token bucket for traffic shaping.
@@ -18,16 +19,19 @@ use bandwidthThrottle\tokenBucket\TokenBucket;
  * Example:
  * <code>
  * use bandwidthThrottle\TokenBucketFilter;
- * use bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+ * use bandwidthThrottle\tokenBucket\TokenBucket;
+ * use bandwidthThrottle\tokenBucket\Rate;
+ * use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
  *
  * $in  = fopen(__DIR__ . "/resources/video.mpg", "r");
  * $out = fopen("php://output", "w");
  *
- * $tokenBucketBuilder = new TokenBucketBuilder();
- * $tokenBucketBuilder->setRate(100, TokenBucketBuilder::KIBIBYTES); // Rate of 100KiB/s
+ * $storage = new SingleProcessStorage();
+ * $rate    = new Rate(100 * 1024, Rate::SECOND); // Rate of 100KiB/s
+ * $bucket  = new TokenBucket(100 * 1024, $rate, $storage);
  *
  * stream_filter_register("throttle", TokenBucketFilter::class);
- * stream_filter_append($out, "throttle", STREAM_FILTER_WRITE, $tokenBucketBuilder->build());
+ * stream_filter_append($out, "throttle", STREAM_FILTER_WRITE, $bucket);
  *
  * stream_copy_to_stream($in, $out);
  * </code>
@@ -80,16 +84,26 @@ class TokenBucketFilter extends \php_user_filter
      */
     public function filter($in, $out, &$consumed, $closing)
     {
-        while ($bucket = stream_bucket_make_writeable($in)) {
-            $chunks = str_split($bucket->data, $this->tokenBucket->getCapacity());
-            foreach ($chunks as $chunk) {
-                $tokens = strlen($chunk);
-                $this->tokenConsumer->consume($tokens);
-                $consumed += $tokens;
-                
+        try {
+            while ($bucket = stream_bucket_make_writeable($in)) {
+                $chunks = str_split($bucket->data, $this->tokenBucket->getCapacity());
+                foreach ($chunks as $chunk) {
+                    $tokens = strlen($chunk);
+                    $this->tokenConsumer->consume($tokens);
+                    $consumed += $tokens;
+
+                }
+                stream_bucket_append($out, $bucket);
             }
-            stream_bucket_append($out, $bucket);
+            return PSFS_PASS_ON;
+
+        } catch (StorageException $e) {
+            trigger_error($e->getMessage(), E_USER_ERROR);
+            return PSFS_ERR_FATAL;
+            
+        } catch (\LengthException $e) {
+            trigger_error($e->getMessage(), E_USER_ERROR);
+            return PSFS_ERR_FATAL;
         }
-        return PSFS_PASS_ON;
     }
 }

@@ -5,6 +5,7 @@ namespace bandwidthThrottle;
 use bandwidthThrottle\tokenBucket\TokenBucket;
 use bandwidthThrottle\tokenBucket\Rate;
 use bandwidthThrottle\tokenBucket\storage\Storage;
+use bandwidthThrottle\tokenBucket\storage\StorageException;
 use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
 
 /**
@@ -234,32 +235,39 @@ class BandwidthThrottle
      * before or use a new instance.
      *
      * @param resource $stream The stream.
+     *
      * @throws BandwidthThrottleException Error during throtteling the stream.
+     * @throws \LengthException The initial burst size was greater than the burst size.
      */
     public function throttle($stream)
     {
-        if (is_resource($this->filter)) {
-            throw new BandwidthThrottleException(
-                "This throttle is still attached to a stream. Call unthrottle() or use a new instance."
+        try {
+            if (is_resource($this->filter)) {
+                throw new BandwidthThrottleException(
+                    "This throttle is still attached to a stream. Call unthrottle() or use a new instance."
+                );
+            }
+            $this->registerOnce();
+
+            $capacity = empty($this->capacity)
+                ? $this->rate->getRate()
+                : $this->capacity;
+
+            $bucket = new TokenBucket($capacity, $this->rate, $this->storage);
+            $bucket->bootstrap($this->initialTokens);
+
+            $this->filter = stream_filter_append(
+                $stream,
+                self::FILTER_NAME,
+                $this->filterMode,
+                $bucket
             );
-        }
-        $this->registerOnce();
-        
-        $capacity = empty($this->capacity)
-            ? $this->rate->getRate()
-            : $this->capacity;
-        
-        $bucket = new TokenBucket($capacity, $this->rate, $this->storage);
-        $bucket->bootstrap($this->initialTokens);
-        
-        $this->filter = stream_filter_append(
-            $stream,
-            self::FILTER_NAME,
-            $this->filterMode,
-            $bucket
-        );
-        if (!is_resource($this->filter)) {
-            throw new BandwidthThrottleException("Could not throttle the stream.");
+            if (!is_resource($this->filter)) {
+                throw new BandwidthThrottleException("Could not throttle the stream.");
+
+            }
+        } catch (StorageException $e) {
+            throw new BandwidthThrottleException("Could not initialize token bucket.", 0, $e);
         }
     }
     
