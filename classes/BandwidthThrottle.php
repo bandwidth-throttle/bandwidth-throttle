@@ -135,9 +135,9 @@ class BandwidthThrottle
     /**
      * Sets the storage.
      *
-     * The storage determines the scope of the throttle. The default storage
-     * is limited to the request scope. I.e. it will throttle the bandwidth per
-     * request.
+     * The storage determines the scope of the throttle. Setting the storage is
+     * optional. The default storage is limited to the request scope.
+     * I.e. it will throttle the bandwidth per request.
      *
      * @param Storage $storage The storage.
      */
