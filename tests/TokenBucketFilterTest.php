@@ -6,7 +6,7 @@ use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
 use bandwidthThrottle\tokenBucket\Rate;
 use bandwidthThrottle\tokenBucket\TokenBucket;
 use phpmock\environment\SleepEnvironmentBuilder;
-use phpmock\environment\MockEnvironment;
+use phpmock\phpunit\PHPMock;
 
 /**
  * Test for TokenBucketFilter.
@@ -19,10 +19,7 @@ use phpmock\environment\MockEnvironment;
 class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @var MockEnvironment Mock for microtime() and usleep().
-     */
-    private $sleepEnvironent;
+    use PHPMock;
     
     /**
      * @var resource The SUT.
@@ -37,13 +34,13 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
                 ->addNamespace("bandwidthThrottle\\tokenBucket\\converter")
                 ->setTimestamp(1417011228);
 
-        $this->sleepEnvironent = $builder->build();
-        $this->sleepEnvironent->enable();
+        $sleepEnvironent = $builder->build();
+        $sleepEnvironent->enable();
+        $this->registerForTearDown($sleepEnvironent);
     }
     
     protected function tearDown()
     {
-        $this->sleepEnvironent->disable();
         if (is_resource($this->filter)) {
             stream_filter_remove($this->filter);
         }
