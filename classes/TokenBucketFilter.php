@@ -16,9 +16,6 @@ use bandwidthThrottle\tokenBucket\storage\StorageException;
  * This filter can shape traffic in both directions. I.e. you can append it
  * to an output stream as well to an input stream.
  *
- * Please be aware of PHP's max_execution_time. You should adjust that
- * time (with e.g. set_time_limit()) to the expected delay.
- *
  * Example:
  * <code>
  * use bandwidthThrottle\TokenBucketFilter;
@@ -105,6 +102,10 @@ class TokenBucketFilter extends \php_user_filter
             return PSFS_ERR_FATAL;
             
         } catch (\LengthException $e) {
+            /*
+             * This case would be a logic error, as the stream chunk is already
+             * splitted to the bucket's capacity.
+             */
             trigger_error($e->getMessage(), E_USER_ERROR);
             return PSFS_ERR_FATAL;
         }

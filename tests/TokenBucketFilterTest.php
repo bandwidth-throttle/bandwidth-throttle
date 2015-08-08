@@ -57,7 +57,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function testOnCreatesFails()
     {
-        stream_filter_register("testOnCreatesFails", "bandwidthThrottle\\TokenBucketFilter");
+        stream_filter_register("testOnCreatesFails", TokenBucketFilter::class);
         $this->filter = stream_filter_append(fopen("php://memory", "w"), "testOnCreatesFails");
     }
     
@@ -74,7 +74,7 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
         $stream = fopen("php://memory", "rw");
         $bucket = new TokenBucket(10, new Rate(1, Rate::SECOND), new SingleProcessStorage());
         
-        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
+        stream_filter_register("test", TokenBucketFilter::class);
         $this->filter = stream_filter_append($stream, "test", STREAM_FILTER_WRITE, $bucket);
         
         foreach ($writes as $write) {
@@ -120,14 +120,17 @@ class TokenBucketFilterTest extends \PHPUnit_Framework_TestCase
     {
         $stream = fopen("php://memory", "w");
         $bucket = new TokenBucket(10, new Rate(1, Rate::SECOND), new SingleProcessStorage());
+        $bucket->bootstrap();
         
-        stream_filter_register("test", "bandwidthThrottle\\TokenBucketFilter");
-        $this->filter = stream_filter_append($stream, "test", null, $bucket);
+        stream_filter_register("test", TokenBucketFilter::class);
+        $this->filter = stream_filter_append($stream, "test", STREAM_FILTER_WRITE, $bucket);
         
         $time = microtime(true);
         foreach ($bytes as $byte) {
             fwrite($stream, str_repeat(" ", $byte));
         }
+        fclose($stream);
+        
         $this->assertLessThan(1e-3, abs((microtime(true) - $time) - $expectedDuration));
     }
     
