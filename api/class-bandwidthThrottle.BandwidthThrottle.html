@@ -89,7 +89,12 @@
 throttle a stream by calling the <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#_throttle">bandwidthThrottle\BandwidthThrottle::throttle()</a></code> method.
 After that all operations on that stream are throttled.</p>
 
-<p>Per default the throttle applies for both, input and output streams.</p>
+<p>Per default the throttle applies for both, input and output streams.
+If you do use one stream bidirectional (which you probably don't) the
+effective rate might not be what you expect. both directions will share
+the same throttle, and therefore in total share the bandwidth. E.g. if you
+limit to 100KiB/s you could read and write each with 50KiB/s. If this is not
+what you want consider using dedicated throttles and streams.</p>
 
 <p>The following example will stream a video with a rate of 100KiB/s to the
 client:</p>
@@ -126,7 +131,7 @@ client:</p>
 				Markus Malkusch <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;">&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;</a><br>
 				<b>Link:</b>
 				<a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a><br>
-			<b>Located at</b> <a href="source-class-bandwidthThrottle.BandwidthThrottle.html#7-248" title="Go to source code">BandwidthThrottle.php</a>
+			<b>Located at</b> <a href="source-class-bandwidthThrottle.BandwidthThrottle.html#11-332" title="Go to source code">BandwidthThrottle.php</a>
 		<br>
 	</div>
 
@@ -146,16 +151,55 @@ client:</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#92-95" title="Go to source code">__construct</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#127-133" title="Go to source code">__construct</a>( )</code>
 
 		<div class="description short">
-			
+			<p>Initialization.</p>
 		</div>
 
 		<div class="description detailed hidden">
+			<p>Initialization.</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setStorage" id="_setStorage">
+
+		<td class="attributes"><code>
+			 public 
+
 			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setStorage">#</a>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#135-147" title="Go to source code">setStorage</a>( <span>bandwidthThrottle\tokenBucket\storage\Storage <var>$storage</var></span> )</code>
+
+		<div class="description short">
+			<p>Sets the storage.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Sets the storage.</p>
+
+<p>The storage determines the scope of the throttle. Setting the storage is
+optional. The default storage is limited to the request scope.
+I.e. it will throttle the bandwidth per request.</p>
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$storage</var></dt>
+					<dd>The storage.</dd>
+				</dl></div>
 
 
 
@@ -176,7 +220,7 @@ client:</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRate">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#97-108" title="Go to source code">setRate</a>( <span>integer <var>$rate</var></span>, <span>string <var>$unit</var> = self::BYTE</span> )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#149-160" title="Go to source code">setRate</a>( <span>integer <var>$rate</var></span>, <span>string <var>$unit</var> = <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#BYTES">bandwidthThrottle\BandwidthThrottle::<b>BYTES</b></a></code></span> )</code>
 
 		<div class="description short">
 			<p>Sets the rate per second.</p>
@@ -217,7 +261,7 @@ client:</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setBurstCapacity">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#110-124" title="Go to source code">setBurstCapacity</a>( <span>integer <var>$capacity</var></span>, <span>string <var>$unit</var> = self::BYTE</span> )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#180-194" title="Go to source code">setBurstCapacity</a>( <span>integer <var>$capacity</var></span>, <span>string <var>$unit</var> = <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#BYTES">bandwidthThrottle\BandwidthThrottle::<b>BYTES</b></a></code></span> )</code>
 
 		<div class="description short">
 			<p>Sets the burst capacity.</p>
@@ -227,7 +271,7 @@ client:</p>
 			<p>Sets the burst capacity.</p>
 
 <p>Setting the burst capacity is optional. If no capacity was set, the
-capacity is set to the rate.</p>
+capacity is set to the amount of bytes for one second.</p>
 
 
 				<h4>Parameters</h4>
@@ -261,7 +305,7 @@ capacity is set to the rate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setInitialBurst">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#126-142" title="Go to source code">setInitialBurst</a>( <span>integer <var>$initialBurst</var></span>, <span>string <var>$unit</var> = <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#BYTES">bandwidthThrottle\BandwidthThrottle::<b>BYTES</b></a></code></span> )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#196-212" title="Go to source code">setInitialBurst</a>( <span>integer <var>$initialBurst</var></span>, <span>string <var>$unit</var> = <code><a href="class-bandwidthThrottle.BandwidthThrottle.html#BYTES">bandwidthThrottle\BandwidthThrottle::<b>BYTES</b></a></code></span> )</code>
 
 		<div class="description short">
 			<p>Sets the initial burst size.</p>
@@ -307,7 +351,7 @@ throttle was activated without limiting the rate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setThrottleInputStream">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#144-152" title="Go to source code">setThrottleInputStream</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#214-222" title="Go to source code">setThrottleInputStream</a>( )</code>
 
 		<div class="description short">
 			<p>Throttles only the input stream.</p>
@@ -339,7 +383,7 @@ throttle was activated without limiting the rate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setThrottleOutputStream">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#154-162" title="Go to source code">setThrottleOutputStream</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#224-232" title="Go to source code">setThrottleOutputStream</a>( )</code>
 
 		<div class="description short">
 			<p>Throttles only the output stream.</p>
@@ -371,7 +415,7 @@ throttle was activated without limiting the rate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setThrottleBothStreams">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#164-172" title="Go to source code">setThrottleBothStreams</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#234-242" title="Go to source code">setThrottleBothStreams</a>( )</code>
 
 		<div class="description short">
 			<p>Throttles the output and input stream.</p>
@@ -403,7 +447,7 @@ throttle was activated without limiting the rate.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_throttle">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#174-207" title="Go to source code">throttle</a>( <span>resource <var>$stream</var></span> )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#244-291" title="Go to source code">throttle</a>( <span>resource <var>$stream</var></span> )</code>
 
 		<div class="description short">
 			<p>Throttles a stream to the given rate.</p>
@@ -431,7 +475,8 @@ before or use a new instance.</p>
 
 				<h4>Throws</h4>
 				<div class="list">
-					<code><a href="class-bandwidthThrottle.BandwidthThrottleException.html">bandwidthThrottle\BandwidthThrottleException</a></code><br>Error during throtteling the stream.
+					<code><a href="class-bandwidthThrottle.BandwidthThrottleException.html">bandwidthThrottle\BandwidthThrottleException</a></code><br>Error during throtteling the stream.<br>
+					LengthException<br>The initial burst size was greater than the burst size.
 				</div>
 
 
@@ -451,7 +496,7 @@ before or use a new instance.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_unthrottle">#</a>
-		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#229-247" title="Go to source code">unthrottle</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.BandwidthThrottle.html#313-331" title="Go to source code">unthrottle</a>( )</code>
 
 		<div class="description short">
 			<p>Unthrottles a previously throttled stream.</p>
@@ -491,7 +536,7 @@ before or use a new instance.</p>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#41-44" title="Go to source code"><b>BYTES</b></a>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#50-53" title="Go to source code"><b>BYTES</b></a>
 			</code>
 
 			<div class="description short">
@@ -506,7 +551,7 @@ before or use a new instance.</p>
 		<td class="value">
 			<div>
 				<a href="#BYTES" class="anchor">#</a>
-				<code>bandwidthThrottle\TokenBucketBuilder::BYTES</code>
+				<code><span class="php-quote">&quot;bytes&quot;</span></code>
 			</div>
 		</td>
 	</tr>
@@ -515,7 +560,7 @@ before or use a new instance.</p>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#46-49" title="Go to source code"><b>KILOBYTES</b></a>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#55-58" title="Go to source code"><b>KILOBYTES</b></a>
 			</code>
 
 			<div class="description short">
@@ -530,7 +575,7 @@ before or use a new instance.</p>
 		<td class="value">
 			<div>
 				<a href="#KILOBYTES" class="anchor">#</a>
-				<code>bandwidthThrottle\TokenBucketBuilder::KILOBYTES</code>
+				<code><span class="php-quote">&quot;kilobytes&quot;</span></code>
 			</div>
 		</td>
 	</tr>
@@ -539,7 +584,7 @@ before or use a new instance.</p>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#51-54" title="Go to source code"><b>KIBIBYTES</b></a>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#60-63" title="Go to source code"><b>KIBIBYTES</b></a>
 			</code>
 
 			<div class="description short">
@@ -554,7 +599,7 @@ before or use a new instance.</p>
 		<td class="value">
 			<div>
 				<a href="#KIBIBYTES" class="anchor">#</a>
-				<code>bandwidthThrottle\TokenBucketBuilder::KIBIBYTES</code>
+				<code><span class="php-quote">&quot;kibibytes&quot;</span></code>
 			</div>
 		</td>
 	</tr>
@@ -563,7 +608,7 @@ before or use a new instance.</p>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#56-59" title="Go to source code"><b>MEGABYTES</b></a>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#65-68" title="Go to source code"><b>MEGABYTES</b></a>
 			</code>
 
 			<div class="description short">
@@ -578,7 +623,7 @@ before or use a new instance.</p>
 		<td class="value">
 			<div>
 				<a href="#MEGABYTES" class="anchor">#</a>
-				<code>bandwidthThrottle\TokenBucketBuilder::MEGABYTES</code>
+				<code><span class="php-quote">&quot;megabytes&quot;</span></code>
 			</div>
 		</td>
 	</tr>
@@ -587,7 +632,7 @@ before or use a new instance.</p>
 		<td class="attributes"><code>string</code></td>
 		<td class="name">
 			<code>
-				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#61-64" title="Go to source code"><b>MEBIBYTES</b></a>
+				<a href="source-class-bandwidthThrottle.BandwidthThrottle.html#70-73" title="Go to source code"><b>MEBIBYTES</b></a>
 			</code>
 
 			<div class="description short">
@@ -602,7 +647,7 @@ before or use a new instance.</p>
 		<td class="value">
 			<div>
 				<a href="#MEBIBYTES" class="anchor">#</a>
-				<code>bandwidthThrottle\TokenBucketBuilder::MEBIBYTES</code>
+				<code><span class="php-quote">&quot;mebibytes&quot;</span></code>
 			</div>
 		</td>
 	</tr>

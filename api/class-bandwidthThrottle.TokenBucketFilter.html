@@ -92,16 +92,19 @@ to an output stream as well to an input stream.</p>
 <p>Example:</p>
 
 <pre><span class="php-keyword1">use</span> bandwidthThrottle\TokenBucketFilter;
-<span class="php-keyword1">use</span> bandwidthThrottle\tokenBucket\TokenBucketBuilder;
+<span class="php-keyword1">use</span> bandwidthThrottle\tokenBucket\TokenBucket;
+<span class="php-keyword1">use</span> bandwidthThrottle\tokenBucket\Rate;
+<span class="php-keyword1">use</span> bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
 
 <span class="php-var">$in</span>  = <span class="php-keyword2">fopen</span>(__DIR__ . <span class="php-quote">&quot;/resources/video.mpg&quot;</span>, <span class="php-quote">&quot;r&quot;</span>);
 <span class="php-var">$out</span> = <span class="php-keyword2">fopen</span>(<span class="php-quote">&quot;php://output&quot;</span>, <span class="php-quote">&quot;w&quot;</span>);
 
-<span class="php-var">$tokenBucketBuilder</span> = <span class="php-keyword1">new</span> TokenBucketBuilder();
-<span class="php-var">$tokenBucketBuilder</span>-&gt;setRate(<span class="php-num">100</span>, TokenBucketBuilder::KIBIBYTES); <span class="php-comment">// Rate of 100KiB/s</span>
+<span class="php-var">$storage</span> = <span class="php-keyword1">new</span> SingleProcessStorage();
+<span class="php-var">$rate</span>    = <span class="php-keyword1">new</span> Rate(<span class="php-num">100</span> * <span class="php-num">1024</span>, Rate::SECOND); <span class="php-comment">// Rate of 100KiB/s</span>
+<span class="php-var">$bucket</span>  = <span class="php-keyword1">new</span> TokenBucket(<span class="php-num">100</span> * <span class="php-num">1024</span>, <span class="php-var">$rate</span>, <span class="php-var">$storage</span>);
 
 <span class="php-keyword2">stream_filter_register</span>(<span class="php-quote">&quot;throttle&quot;</span>, TokenBucketFilter::<span class="php-keyword1">class</span>);
-<span class="php-keyword2">stream_filter_append</span>(<span class="php-var">$out</span>, <span class="php-quote">&quot;throttle&quot;</span>, STREAM_FILTER_WRITE, <span class="php-var">$tokenBucketBuilder</span>-&gt;build());
+<span class="php-keyword2">stream_filter_append</span>(<span class="php-var">$out</span>, <span class="php-quote">&quot;throttle&quot;</span>, STREAM_FILTER_WRITE, <span class="php-var">$bucket</span>);
 
 <span class="php-keyword2">stream_copy_to_stream</span>(<span class="php-var">$in</span>, <span class="php-var">$out</span>);</pre>
 	</div>
@@ -139,7 +142,7 @@ php_user_filter
 				Markus Malkusch <a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;">&#x6d;&#x61;&#114;&#107;&#117;&#115;&#64;&#x6d;&#x61;&#x6c;&#x6b;u&#115;&#99;&#104;&#46;&#x64;&#x65;</a><br>
 				<b>Link:</b>
 				<a href="bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK">Donations</a><br>
-			<b>Located at</b> <a href="source-class-bandwidthThrottle.TokenBucketFilter.html#7-88" title="Go to source code">TokenBucketFilter.php</a>
+			<b>Located at</b> <a href="source-class-bandwidthThrottle.TokenBucketFilter.html#9-113" title="Go to source code">TokenBucketFilter.php</a>
 		<br>
 	</div>
 
@@ -159,14 +162,14 @@ php_user_filter
 
 		<td class="name"><div>
 		<a class="anchor" href="#_onCreate">#</a>
-		<code><a href="source-class-bandwidthThrottle.TokenBucketFilter.html#46-59" title="Go to source code">onCreate</a>( )</code>
+		<code><a href="source-class-bandwidthThrottle.TokenBucketFilter.html#56-70" title="Go to source code">onCreate</a>( )</code>
 
 		<div class="description short">
-			<p>Build the token bucket.</p>
+			<p>Builds the token bucket consumer.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Build the token bucket.</p>
+			<p>Builds the token bucket consumer.</p>
 
 
 
@@ -195,7 +198,7 @@ php_user_filter
 
 		<td class="name"><div>
 		<a class="anchor" href="#_filter">#</a>
-		<code><a href="source-class-bandwidthThrottle.TokenBucketFilter.html#61-87" title="Go to source code">filter</a>( <span>resource <var>$in</var></span>, <span>resource <var>$out</var></span>, <span>integer <var>&amp; $consumed</var></span>, <span>boolean <var>$closing</var></span> )</code>
+		<code><a href="source-class-bandwidthThrottle.TokenBucketFilter.html#72-112" title="Go to source code">filter</a>( <span>resource <var>$in</var></span>, <span>resource <var>$out</var></span>, <span>integer <var>&amp; $consumed</var></span>, <span>boolean <var>$closing</var></span> )</code>
 
 		<div class="description short">
 			<p>Traffic shaping.</p>
