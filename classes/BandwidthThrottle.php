@@ -19,9 +19,11 @@ use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
  * After that all operations on that stream are throttled.
  *
  * Per default the throttle applies for both, input and output streams.
- *
- * Please be aware of PHP's max_execution_time. You should adjust that
- * time (with e.g. set_time_limit()) to the expected delay.
+ * If you do use one stream bidirectional (which you probably don't) the
+ * effective rate might not be what you expect. both directions will share
+ * the same throttle, and therefore in total share the bandwidth. E.g. if you
+ * limit to 100KiB/s you could read and write each with 50KiB/s. If this is not
+ * what you want consider using dedicated throttles and streams.
  *
  * The following example will stream a video with a rate of 100KiB/s to the
  * client:
@@ -131,6 +133,20 @@ class BandwidthThrottle
     }
 
     /**
+     * Sets the storage.
+     *
+     * The storage determines the scope of the throttle. The default storage
+     * is limited to the request scope. I.e. it will throttle the bandwidth per
+     * request.
+     *
+     * @param Storage $storage The storage.
+     */
+    public function setStorage(Storage $storage)
+    {
+        $this->storage = $storage;
+    }
+    
+    /**
      * Sets the rate per second.
      *
      * @param int    $rate The rate per second.
@@ -144,7 +160,7 @@ class BandwidthThrottle
     }
 
     /**
-     * Converts a amount of a unit into the amount of bytes.
+     * Converts an amount of an unit into the amount of bytes.
      *
      * @param int    $amount The amount of the unit.
      * @param string $unit   The unit.
