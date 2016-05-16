@@ -17,7 +17,7 @@
         "psr-4": {"bandwidthThrottle\\": "classes/"}
     },
     "require": {
-        "php": ">=5.5",
+        "php": ">=5.6",
         "bandwidth-throttle/token-bucket": "^0.4"
     },
     "require-dev": {
