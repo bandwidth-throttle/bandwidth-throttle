@@ -172,7 +172,6 @@ class BandwidthThrottle
     {
         if (!isset(self::$unitMap[$unit])) {
             throw new \InvalidArgumentException("The unit was invalid.");
-            
         }
         return $amount * self::$unitMap[$unit];
     }
@@ -283,7 +282,6 @@ class BandwidthThrottle
             );
             if (!is_resource($this->filter)) {
                 throw new BandwidthThrottleException("Could not throttle the stream.");
-
             }
         } catch (StorageException $e) {
             throw new BandwidthThrottleException("Could not initialize token bucket.", 0, $e);
@@ -301,11 +299,9 @@ class BandwidthThrottle
     {
         if (self::$registered) {
             return;
-
         }
         if (!stream_filter_register(self::FILTER_NAME, "bandwidthThrottle\\TokenBucketFilter")) {
             throw new BandwidthThrottleException("Could not register throttle filter.");
-
         }
         self::$registered = true;
     }
@@ -321,11 +317,9 @@ class BandwidthThrottle
     {
         if (!is_resource($this->filter)) {
             return;
-
         }
         if (!stream_filter_remove($this->filter)) {
             throw new BandwidthThrottleException("Failed to unthrottle stream.");
-
         }
         unset($this->filter);
     }

@@ -91,16 +91,13 @@ class TokenBucketFilter extends \php_user_filter
                     $tokens = strlen($chunk);
                     $this->tokenConsumer->consume($tokens);
                     $consumed += $tokens;
-
                 }
                 stream_bucket_append($out, $bucket);
             }
             return PSFS_PASS_ON;
-
         } catch (StorageException $e) {
             trigger_error($e->getMessage(), E_USER_ERROR);
             return PSFS_ERR_FATAL;
-            
         } catch (\LengthException $e) {
             /*
              * This case would be a logic error, as the stream chunk is already
