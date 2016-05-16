@@ -269,7 +269,7 @@ class BandwidthThrottle
             $this->registerOnce();
 
             $capacity = empty($this->capacity)
-                ? $this->rate->getRate()
+                ? $this->rate->getTokensPerSecond()
                 : $this->capacity;
 
             $bucket = new TokenBucket($capacity, $this->rate, $this->storage);
