@@ -23,7 +23,7 @@ use bandwidthThrottle\tokenBucket\storage\StorageException;
  * use bandwidthThrottle\tokenBucket\Rate;
  * use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
  *
- * $in  = fopen(__DIR__ . "/resources/video.mpg", "r");
+ * $in  = fopen(__DIR__ . "/video.mpg", "r");
  * $out = fopen("php://output", "w");
  *
  * $storage = new SingleProcessStorage();

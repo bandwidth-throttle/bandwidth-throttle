@@ -30,7 +30,7 @@ use bandwidthThrottle\tokenBucket\storage\SingleProcessStorage;
  * <code>
  * use bandwidthThrottle\BandwidthThrottle;
  *
- * $in  = fopen(__DIR__ . "/resources/video.mpg", "r");
+ * $in  = fopen(__DIR__ . "/video.mpg", "r");
  * $out = fopen("php://output", "w");
  *
  * $throttle = new BandwidthThrottle();

@@ -17,11 +17,12 @@ matrix:
     - php: 7.0
 
 install:
-  - composer require squizlabs/php_codesniffer
-  - composer require phpmd/phpmd
+  - composer require squizlabs/php_codesniffer phpmd/phpmd cundd/test-flight
 
 script:
   - vendor/bin/phpunit
+  - vendor/bin/test-flight --bootstrap tests/test-flight.php classes/
+  - vendor/bin/test-flight --bootstrap tests/test-flight.php README.md
   - vendor/bin/phpcs --standard=PSR2 classes/ tests/
   - vendor/bin/phpmd classes/ text cleancode,codesize,controversial,design,naming,unusedcode
 

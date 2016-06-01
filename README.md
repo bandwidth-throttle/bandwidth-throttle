@@ -18,7 +18,7 @@ The package is in the namespace
 [`BandwidthThrottle::setRate()`](http://bandwidth-throttle.github.io/bandwidth-throttle/api/class-bandwidthThrottle.BandwidthThrottle.html#_setRate)
 sets the bandwidth limit. E.g. this would set it to 100KiB/s:
 ```php
-$throttle->setRate(100, BandwidthThrottle::KIBIBYTES)
+$throttle->setRate(100, bandwidthThrottle\BandwidthThrottle::KIBIBYTES);
 ```
 
 [`BandwidthThrottle::throttle()`](http://bandwidth-throttle.github.io/bandwidth-throttle/api/class-bandwidthThrottle.BandwidthThrottle.html#_throttle)
@@ -63,7 +63,7 @@ This example will stream a video with a rate of 100KiB/s to the browser:
 ```php
 use bandwidthThrottle\BandwidthThrottle;
 
-$in  = fopen(__DIR__ . "/resources/video.mpg", "r");
+$in  = fopen(__DIR__ . "/video.mpg", "r");
 $out = fopen("php://output", "w");
 
 $throttle = new BandwidthThrottle();
@@ -81,11 +81,11 @@ and 100KiB/s per request. This will require a shared storage for the 1MiB/s:
 use bandwidthThrottle\BandwidthThrottle;
 use bandwidthThrottle\tokenBucket\storage\FileStorage;
 
-$in  = fopen(__DIR__ . "/resources/video.mpg", "r");
+$in  = fopen(__DIR__ . "/video.mpg", "r");
 $out = fopen("php://output", "w");
 
 $hostThrottle = new BandwidthThrottle();
-$hostThrottle->setRate(1, BandwidthThrottle::MIBIBYTES); // Set limit to 1MiB/s
+$hostThrottle->setRate(1, BandwidthThrottle::MEBIBYTES); // Set limit to 1MiB/s
 $hostThrottle->setStorage(new FileStorage(__DIR__ . "/host.throttle"));
 $hostThrottle->throttle($out);
 
