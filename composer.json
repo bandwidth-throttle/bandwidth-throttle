@@ -18,11 +18,11 @@
     },
     "require": {
         "php": ">=5.6",
-        "bandwidth-throttle/token-bucket": "^0.4"
+        "bandwidth-throttle/token-bucket": "^1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4",
-        "php-mock/php-mock-phpunit": "^0.3"
+        "phpunit/phpunit": "^5",
+        "php-mock/php-mock-phpunit": "^1"
     },
     "archive": {
         "exclude": ["/tests"]
