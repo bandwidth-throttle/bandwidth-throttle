@@ -9,7 +9,7 @@ namespace bandwidthThrottle;
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
  * @license WTFPL
  */
-class BandwidthThrottleException extends \Exception
+final class BandwidthThrottleException extends \Exception
 {
 
 }

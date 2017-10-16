@@ -40,7 +40,7 @@ use bandwidthThrottle\tokenBucket\storage\StorageException;
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
  * @license WTFPL
  */
-class TokenBucketFilter extends \php_user_filter
+final class TokenBucketFilter extends \php_user_filter
 {
 
     /**
